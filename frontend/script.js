@@ -2,115 +2,150 @@ const USER_API = "http://localhost:3001";
 const TASK_API = "http://localhost:3002/tasks";
 const COMMENT_API = "http://localhost:3003/comments";
 
-let loggedIn = false;
+let loggedInUser = localStorage.getItem("loggedInUser") || null;
 
-// REGISTER
-function register() {
-  const username = document.getElementById("user").value;
-  const password = document.getElementById("pass").value;
-  fetch(`${USER_API}/register`, {
+// UTIL
+function ui(sel) {
+  return document.querySelector(sel);
+}
+
+// --- AUTH ---
+async function register() {
+  const username = ui("#user").value.trim();
+  const password = ui("#pass").value;
+  if (!username || !password) return alert("Fill both fields");
+  await fetch(`${USER_API}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
-  })
-    .then((res) => res.json())
-    .then(() => {
-      alert("Registered!");
-    })
-    .catch((err) => console.error(err));
+  });
+  alert("Registered successfully");
 }
 
-// LOGIN
-function login() {
-  const username = document.getElementById("user").value;
-  const password = document.getElementById("pass").value;
-  fetch(`${USER_API}/login`, {
+async function login() {
+  const username = ui("#user").value.trim();
+  const password = ui("#pass").value;
+  if (!username || !password) return alert("Fill both fields");
+  const res = await fetch(`${USER_API}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
-  })
-    .then((res) => {
-      if (res.ok) {
-        loggedIn = true;
-        document.getElementById(
-          "auth-status"
-        ).textContent = `Logged in as ${username}`;
-        loadTasks();
-      } else {
-        throw new Error("Login failed");
-      }
-    })
-    .catch((err) => {
-      loggedIn = false;
-      document.getElementById("auth-status").textContent = err.message;
-    });
+  });
+
+  if (res.ok) {
+    loggedInUser = username;
+    localStorage.setItem("loggedInUser", username);
+    ui(".auth-status").textContent = `Logged in as ${username}`;
+    // go to tasks page after login
+    window.location.href = "tasks.html";
+  } else {
+    ui(".auth-status").textContent = "Login failed";
+  }
 }
 
-// CREATE TASK (requires login)
-function createTask() {
-  if (!loggedIn) return alert("Please log in first.");
-  const name = document.getElementById("task-name").value;
-  fetch(TASK_API, {
+// Call this on every page to guard routes
+function requireLogin() {
+  if (!loggedInUser) {
+    alert("Please log in first.");
+    window.location.href = "login.html";
+    throw new Error("Not logged in");
+  }
+}
+
+// --- TASKS ---
+async function createTask() {
+  requireLogin();
+  const name = ui("#task-name").value.trim();
+  if (!name) return;
+  await fetch(TASK_API, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
-  })
-    .then((res) => res.json())
-    .then(loadTasks)
-    .catch(console.error);
+  });
+  ui("#task-name").value = "";
+  loadTasks();
 }
 
-// LOAD TASKS
-function loadTasks() {
-  if (!loggedIn) return;
-  fetch(TASK_API)
-    .then((res) => res.json())
-    .then((tasks) => {
-      const list = document.getElementById("task-list");
-      list.innerHTML = "";
-      tasks.forEach((task) => {
-        const li = document.createElement("li");
-        li.textContent = task.name;
-        list.appendChild(li);
-      });
-    })
-    .catch(console.error);
+async function loadTasks() {
+  requireLogin();
+  const res = await fetch(TASK_API);
+  const tasks = await res.json();
+  const list = ui("#task-list");
+  list.innerHTML = "";
+  tasks.forEach((t) => {
+    const li = document.createElement("li");
+    li.textContent = t.name;
+    list.appendChild(li);
+  });
 }
 
-// ADD COMMENT
-function addComment() {
-  if (!loggedIn) return alert("Please log in first.");
-  const taskName = document.getElementById("comment-task-name").value;
-  const content = document.getElementById("comment-content").value;
-  fetch(COMMENT_API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ taskName, content }),
-  })
-    .then((res) => res.json())
-    .then(() => loadComments(taskName))
-    .catch(console.error);
+// --- COMMENTS ---
+// --- COMMENTS ---
+async function addComment() {
+  requireLogin();
+
+  const taskName = ui("#comment-task-name").value.trim();
+  const content = ui("#comment-content").value.trim();
+  if (!taskName || !content) {
+    return alert("Both task name and comment are required.");
+  }
+
+  // 1. Get existing tasks
+  let tasks;
+  try {
+    const res = await fetch(TASK_API);
+    tasks = await res.json();
+  } catch (err) {
+    console.error("Failed to load tasks:", err);
+    return alert("Could not verify task existence. Try again later.");
+  }
+
+  // 2. Check if the task exists
+  const exists = tasks.some((t) => t.name === taskName);
+  if (!exists) {
+    return alert(`Task "${taskName}" does not exist. Please create it first.`);
+  }
+
+  // 3. Only now add the comment
+  try {
+    await fetch(COMMENT_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ taskName, content }),
+    });
+    ui("#comment-content").value = "";
+    loadComments(taskName);
+  } catch (err) {
+    console.error("Failed to add comment:", err);
+    alert("Could not add comment. Try again later.");
+  }
 }
 
-// LOAD COMMENTS
-function loadComments(taskName) {
-  fetch(`${COMMENT_API}/${encodeURIComponent(taskName)}`)
-    .then((res) => res.json())
-    .then((comments) => {
-      const list = document.getElementById("comment-list");
-      list.innerHTML = "";
-      comments.forEach((c) => {
-        const li = document.createElement("li");
-        li.textContent = `${c.taskName}: ${c.content}`;
-        list.appendChild(li);
-      });
-    })
-    .catch(console.error);
+async function loadComments(taskName) {
+  requireLogin();
+  const res = await fetch(`${COMMENT_API}/${encodeURIComponent(taskName)}`);
+  const comments = await res.json();
+  const list = ui("#comment-list");
+  list.innerHTML = "";
+  comments.forEach((c) => {
+    const li = document.createElement("li");
+    li.textContent = `${c.taskName}: ${c.content}`;
+    list.appendChild(li);
+  });
 }
 
-// on page load, clear lists
-window.onload = () => {
-  document.getElementById("auth-status").textContent = "Not logged in";
-  document.getElementById("task-list").innerHTML = "";
-  document.getElementById("comment-list").innerHTML = "";
-};
+// --- PAGE SETUP ---
+window.addEventListener("DOMContentLoaded", () => {
+  // update auth status on nav/header if present
+  const authEl = ui(".auth-status");
+  if (authEl) {
+    authEl.textContent = loggedInUser
+      ? `Logged in as ${loggedInUser}`
+      : "Not logged in";
+  }
+
+  // auto-load tasks/comments on their pages
+  if (document.body.matches("[onload='loadTasks()']")) {
+    loadTasks();
+  }
+});

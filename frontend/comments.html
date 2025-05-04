@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Comments • Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="login.html">Login</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="comments.html">Comments</a>
+      </nav>
+    </header>
+
+    <div class="main-container">
+      <div class="card">
+        <h2>Add Comment</h2>
+        <input id="comment-task-name" placeholder="Task name" />
+        <input id="comment-content" placeholder="Comment" />
+        <button onclick="addComment()">Add Comment</button>
+      </div>
+      <div class="card">
+        <h2>Comments</h2>
+        <ul id="comment-list"></ul>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

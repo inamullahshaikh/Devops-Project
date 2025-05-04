@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tasks • Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body onload="loadTasks()">
+    <header>
+      <nav>
+        <a href="login.html">Login</a>
+        <a href="tasks.html">Tasks</a>
+        <a href="comments.html">Comments</a>
+      </nav>
+    </header>
+
+    <div class="main-container">
+      <div class="card">
+        <h2>Create Task</h2>
+        <input id="task-name" placeholder="Task name" />
+        <button onclick="createTask()">Add Task</button>
+      </div>
+      <div class="card">
+        <h2>Tasks</h2>
+        <ul id="task-list"></ul>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
