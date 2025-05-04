@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Task Manager</h1>
+
+    <!-- Register/Login -->
+    <section>
+      <h2>Register / Login</h2>
+      <input id="user" placeholder="Username" />
+      <input id="pass" type="password" placeholder="Password" />
+      <button onclick="register()">Register</button>
+      <button onclick="login()">Login</button>
+      <p id="auth-status"></p>
+    </section>
+
+    <!-- Create Task -->
+    <section>
+      <h2>Create Task</h2>
+      <input id="task-name" placeholder="Task name" />
+      <button onclick="createTask()">Add Task</button>
+    </section>
+
+    <!-- Show Tasks -->
+    <section>
+      <h2>Tasks</h2>
+      <ul id="task-list"></ul>
+    </section>
+
+    <!-- Comments -->
+    <section>
+      <h2>Comments</h2>
+      <input id="comment-task-name" placeholder="Task name" />
+      <input id="comment-content" placeholder="Comment" />
+      <button onclick="addComment()">Add Comment</button>
+      <ul id="comment-list"></ul>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
