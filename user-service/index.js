@@ -6,11 +6,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-<<<<<<< HEAD
-mongoose.connect("mongodb://localhost/userdb");
-=======
 mongoose.connect("mongodb://mongo/userdb");
->>>>>>> 56852dc (Hello)
 
 const User = mongoose.model("User", { username: String, password: String });
 

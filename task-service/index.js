@@ -8,11 +8,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-<<<<<<< HEAD
-mongoose.connect("mongodb://localhost:27017/tasks", {
-=======
 mongoose.connect("mongodb://mongo:27017/tasks", {
->>>>>>> 56852dc (Hello)
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
