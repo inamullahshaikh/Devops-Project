@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [user-service, task-service, comment-service, frontend]
+        service: [user-service, task-service, comment-service] # removed frontend
 
     steps:
       - name: Checkout repository
