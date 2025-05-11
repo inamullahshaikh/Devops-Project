@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-service
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-service
+  template:
+    metadata:
+      labels:
+        app: comment-service
+    spec:
+      containers:
+        - name: comment-service
+          image: 22i0857/comment-service:latest
+          ports:
+            - containerPort: 3003
+          env:
+            - name: MONGO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: MONGO_URL_COMMENT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comment-service
+  namespace: project
+spec:
+  selector:
+    app: comment-service
+  ports:
+    - port: 3003
+      targetPort: 3003

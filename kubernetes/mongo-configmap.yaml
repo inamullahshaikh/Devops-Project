@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+  namespace: project
+data:
+  MONGO_URL_USER: mongodb://mongo:27017/userdb
+  MONGO_URL_TASK: mongodb://mongo:27017/tasks
+  MONGO_URL_COMMENT: mongodb://mongo:27017/comments

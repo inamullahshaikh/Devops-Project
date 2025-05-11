@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-service
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-service
+  template:
+    metadata:
+      labels:
+        app: task-service
+    spec:
+      containers:
+        - name: task-service
+          image: 22i0857/task-service:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: MONGO_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: mongo-config
+                  key: MONGO_URL_TASK
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-service
+  namespace: project
+spec:
+  selector:
+    app: task-service
+  ports:
+    - port: 3002
+      targetPort: 3002

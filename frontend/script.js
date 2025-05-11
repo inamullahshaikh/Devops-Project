@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 const USER_API = "http://localhost:3001";
 const TASK_API = "http://localhost:3002/tasks";
 const COMMENT_API = "http://localhost:3003/comments";
+=======
+const USER_API = "http://localhost:3001"; // mapped from user-service
+const TASK_API = "http://localhost:3002/tasks"; // mapped from task-service
+const COMMENT_API = "http://localhost:3003/comments"; // mapped from comment-service
+>>>>>>> 56852dc (Hello)
 
 let loggedInUser = localStorage.getItem("loggedInUser") || null;
 
