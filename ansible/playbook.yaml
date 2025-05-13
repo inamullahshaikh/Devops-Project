@@ -1,0 +1,68 @@
+- name: Deploy Local DevOps Project to EC2
+  hosts: ec2
+  become: yes
+
+  tasks:
+    - name: Install dependencies
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: true
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install Docker Compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: "0755"
+
+    - name: Ensure Docker is running
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create app directory
+      file:
+        path: /home/ubuntu/Devops-Project
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: "0755"
+    - name: Copy Files to EC2
+      ansible.builtin.synchronize:
+        src: "{{ playbook_dir }}/../" # Corrected path
+        dest: /home/ubuntu/Devops-Project/
+        mode: push
+        recursive: yes
+
+    - name: Set ownership of the backend directory
+      ansible.builtin.file:
+        path: /home/ubuntu/Devops-Project/ # Corrected path
+        owner: ubuntu
+        group: ubuntu
+        recurse: yes
+
+    - name: Run Docker Compose
+      command: docker-compose up -d
+      args:
+        chdir: /home/ubuntu/Devops-Project
