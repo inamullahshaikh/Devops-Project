@@ -1,6 +1,6 @@
-const USER_API = "http://localhost:3001"; // mapped from user-service
-const TASK_API = "http://localhost:3002/tasks"; // mapped from task-service
-const COMMENT_API = "http://localhost:3003/comments"; // mapped from comment-service
+const USER_API = "http://13.60.77.122:3001"; // mapped from user-service
+const TASK_API = "http://13.60.77.122:3002/tasks"; // mapped from task-service
+const COMMENT_API = "http://13.60.77.122:3003/comments"; // mapped from comment-service
 
 let loggedInUser = localStorage.getItem("loggedInUser") || null;
 
