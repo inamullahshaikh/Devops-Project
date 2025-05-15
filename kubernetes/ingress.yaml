@@ -4,37 +4,39 @@ metadata:
   name: project-ingress
   namespace: project
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
+  ingressClassName: nginx
   rules:
-    - host: devops
+    - host: devops-project.local
       http:
         paths:
-          - path: /?(.*)
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend
-                port:
-                  number: 80
-          - path: /api/user/?(.*)
-            pathType: Prefix
+          - path: /user(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: user-service
                 port:
                   number: 3001
-          - path: /api/task/?(.*)
-            pathType: Prefix
+          - path: /task(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: task-service
                 port:
                   number: 3002
-          - path: /api/comment/?(.*)
-            pathType: Prefix
+          - path: /notification(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
-                name: comment-service
+                name: notification-service
                 port:
                   number: 3003
+          - path: /(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
