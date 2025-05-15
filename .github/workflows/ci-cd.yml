@@ -7,11 +7,11 @@ on:
 jobs:
   build-and-push:
     name: Build & Push Docker Images
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # changed from ubuntu-latest
 
     strategy:
       matrix:
-        service: [user-service, task-service, comment-service] # removed frontend
+        service: [user-service, task-service, comment-service]
 
     steps:
       - name: Checkout repository
