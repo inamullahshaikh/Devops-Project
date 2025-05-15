@@ -89,7 +89,7 @@ async function addComment() {
   if (!taskName || !content) {
     return alert("Both task name and comment are required.");
   }
-
+  console.log("Hello");
   // 1. Get existing tasks
   let tasks;
   try {
