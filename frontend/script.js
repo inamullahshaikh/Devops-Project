@@ -66,18 +66,20 @@ async function createTask() {
   loadTasks();
 }
 
-async function loadTasks() {
-  requireLogin();
-  const res = await fetch(TASK_API);
-  const tasks = await res.json();
-  const list = ui("#task-list");
-  list.innerHTML = "";
-  tasks.forEach((t) => {
-    const li = document.createElement("li");
-    li.textContent = t.name;
-    list.appendChild(li);
-  });
-}
+// async function loadTasks() {
+//   requireLogin();
+//   const res = await fetch(TASK_API);
+//   const tasks = await res.json();
+//   const list = ui("#task-list");
+//   list.innerHTML = "";
+//   tasks.forEach((t) => {
+//     if (t.name != "Sucking Inam's dick") {
+//       const li = document.createElement("li");
+//       li.textContent = t.name;
+//       list.appendChild(li);
+//     }
+//   });
+// }
 
 // --- COMMENTS ---
 // --- COMMENTS ---

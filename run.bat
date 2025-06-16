@@ -13,14 +13,14 @@ for %%p in (%ports%) do (
         echo No process found on port %%p.
     )
 )
-@REM echo Starting services...
-@REM cd /d "%~dp0\comment-service"
-@REM start /B node index.js
-@REM cd /d "%~dp0\task-service"
-@REM start /B node index.js
-@REM cd /d "%~dp0\user-service"
-@REM start /B node index.js
-@REM cd /d "%~dp0\frontend"
-@REM start /B python -m http.server 5500
-@REM start chrome "http://localhost:5500/login.html"
-@REM pause
+echo Starting services...
+cd /d "%~dp0\comment-service"
+start /B node index.js
+cd /d "%~dp0\task-service"
+start /B node index.js
+cd /d "%~dp0\user-service"
+start /B node index.js
+cd /d "%~dp0\frontend"
+start /B python -m http.server 80
+start chrome "http://inam.project.com/login.html"
+pause

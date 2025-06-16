@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "comment_service" {
   }
 
   spec {
-    replicas = 1
+    replicas = 3
     selector {
       match_labels = {
         app = var.comment_service_name
